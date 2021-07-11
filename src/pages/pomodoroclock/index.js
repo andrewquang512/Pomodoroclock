@@ -4,10 +4,26 @@ import '../../assets/main.css'
 
 const Pomodoroclock = () =>{
     const [BreakLength, setBreakLength] = useState(60 * 5);
-    const [SessionLength, setSessionLength] = useState(60 * 2);
+    const [SessionLength, setSessionLength] = useState(60 * 25);
     const [TimerLeft, setTimerLeft] = useState(SessionLength);
     const [Status, setStatus] = useState('New');
     const [Type, setType] = useState('Session');
+    const [audio] = useState(new Audio('https://www.soundjay.com/clock/sounds/alarm-clock-01.mp3'));
+    const [playing, setPlaying] = useState(false);
+
+    useEffect(() => {
+        playing ? audio.play() : audio.pause();
+      },
+      [playing,audio]
+    );
+
+    useEffect(() => {
+      audio.addEventListener('ended', () => setPlaying(false));
+      return () => {
+        audio.removeEventListener('ended', () => setPlaying(false));
+      };
+    }, []);
+
     const Timedisplay = (time) => {
       let minute = Math.floor(time/60);
       let second = time - minute * 60;
@@ -22,11 +38,13 @@ const Pomodoroclock = () =>{
         timerID = setInterval(
           () =>{
             const newTimerLeft = TimerLeft - 1;
-            if (newTimerLeft >= 0) setTimerLeft(TimerLeft - 1);
+            if (newTimerLeft >= 0){
+              if(Type === 'Session' && newTimerLeft === (60 * 25 - 10) ) setPlaying(false);
+              if(Type === 'Break' && newTimerLeft === (60 * 5 - 10) ) setPlaying(false);
+              setTimerLeft(TimerLeft - 1);
+            } 
             else {
-              const url = "http://streaming.tdiradio.com:8000/house.mp3";
-              const audio = new Audio(url);
-              audio.play();
+              setPlaying(true);
               if(Type === 'Session'){
                 setTimerLeft(BreakLength);
                 setType('Break');
@@ -36,7 +54,7 @@ const Pomodoroclock = () =>{
                 setType('Session');
               }
             }
-          }, 10 
+          }, 1000 
         );
       };
       if(Status === 'Stop') {
