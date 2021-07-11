@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import Styles from '../../assets/pomodoroclock/styles';
 import '../../assets/main.css'
 
 const Pomodoroclock = () =>{
     const [BreakLength, setBreakLength] = useState(60 * 5);
-    const [SessionLength, setSessionLength] = useState(60 * 25);
+    const [SessionLength, setSessionLength] = useState(60 * 2);
     const [TimerLeft, setTimerLeft] = useState(SessionLength);
     const [Status, setStatus] = useState('New');
     const [Type, setType] = useState('Session');
@@ -23,6 +24,9 @@ const Pomodoroclock = () =>{
             const newTimerLeft = TimerLeft - 1;
             if (newTimerLeft >= 0) setTimerLeft(TimerLeft - 1);
             else {
+              const url = "http://streaming.tdiradio.com:8000/house.mp3";
+              const audio = new Audio(url);
+              audio.play();
               if(Type === 'Session'){
                 setTimerLeft(BreakLength);
                 setType('Break');
@@ -32,7 +36,7 @@ const Pomodoroclock = () =>{
                 setType('Session');
               }
             }
-          }, 1000 
+          }, 10 
         );
       };
       if(Status === 'Stop') {
@@ -57,21 +61,21 @@ const Pomodoroclock = () =>{
     }
     //TODO: it should have a break status
     return (
-    <div class="w-full px-5 py-24 mx-auto bg-green-300">
-      <div class="flex flex-col text-center w-full mb-12">
-        <h1 class="text-6xl font-medium title-font mb-4 text-gray-900">
-          { (Status === 'New' && Type === 'Session') ? "Let's focus"
+    <div className={Styles.container}>
+      <div className={Styles.main}>
+        <h1 className={Styles.title}>
+          { (Status === 'New' && Type === 'Session') ? "Can you focus in 25 minutes?"
             : (Status === 'Running' && Type === 'Session') ? "You're doing great, keep up"
             : (Status === 'Stop' && Type === 'Session') ? "Just a little more to done, try hard"
             : "You are awesome, it's time for break"} 
         </h1>
-        <h1 class="mt-8 mb-8 mx-auto leading-relaxed text-base text-8xl">
+        <h1 className={Styles.time}>
           {Timedisplay(TimerLeft)}
         </h1>
       </div>
-      <div class="flex w-9/12 sm:flex-row mx-auto px-8 sm:space-x-4 sm:space-y-0 space-y-4 sm:px-0 items-end">
-        <div class="flex relative flex-grow w-full justify-center items-center">
-          <button class="px-6 py-6 w-2/6 text-2xl text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+      <div className={Styles.controller}>
+        <div className={Styles.center_flex_container}>
+          <button className={Styles.button}
           onClick={handleStartStop}>
           { (Status === 'New') ? "Start"
             : (Status === 'Running') ? "Stop"
@@ -79,8 +83,8 @@ const Pomodoroclock = () =>{
             : "Start"}
           </button>
         </div>
-        <div class="flex relative flex-grow w-full justify-center items-center">
-          <button class="px-6 py-6 w-2/6 text-2xl text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+        <div className={Styles.center_flex_container}>
+          <button className={Styles.button}
           onClick={handleReset}>
             Reset
           </button>
