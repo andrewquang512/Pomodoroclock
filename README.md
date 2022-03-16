@@ -1,3 +1,7 @@
+# This is my first React app - Pomodoroclock
+
+Link preview: [Pomodoroclock](https://viquang-pomodoroclock.netlify.app/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
